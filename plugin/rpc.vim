@@ -11,7 +11,7 @@ def start():
     if(fn == ""):
         fn = "Idle" 
     global s
-    s = subprocess.Popen("python3 ~/.vim/plugged/vim-discord-rpc/plugin/rpc.py {}".format(fn), shell=True)
+    s = subprocess.Popen("python3 ./rpc.py {}".format(fn), shell=True)
 def kill():
     s.terminate()
 en
