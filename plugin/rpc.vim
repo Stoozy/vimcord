@@ -1,32 +1,23 @@
+if !has("python3")
+    echo "vim has to be compiled with +python to run this"
+    finish
+endif
 
 python3 << en
-
-from pypresence import Presence # The simple rich presence client in pypresence
-import time, sys, vim
-import threading
-
-client_id = "765583106610298881"  # Put your Client ID in here
-RPC = Presence(client_id)  # Initialize the Presence client
-
-
-RPC.connect() # Start the handshake loop
+import os, subprocess,vim
 
 def start():
     fn = vim.eval("expand('%:t')")
-
     if(fn == ""):
-        s = "Idling"
-    else:
-        s = "Editing " + fn
-
-    e = int(time.time())
-
-    RPC.update(state=s, large_image="vim", start=e) # Updates our presence
-
-
+        fn = "Idle" 
+    global s
+    s = subprocess.Popen("python3 ~/.vim/plugged/vim-discord-rpc/plugin/rpc.py {}".format(fn), shell=True)
+def kill():
+    s.terminate()
 en
 
-" Start RPC on startup and update on Change file
-autocmd  BufReadPost *  :python3 start()
-autocmd  VimEnter *  :python3 start()
+
+autocmd VimEnter * :python3 start()
+autocmd BufReadPre * :execute 'python3 kill()' | :python3 start()
+autocmd VimLeave * :python3 kill()
 
