@@ -7,5 +7,5 @@
 ## Pre-requisites
 <p>You must have Python3 and Vim. </p>
 <p>Vim must be compiled with Python3 </p>
-<p>Run: vim --version to see if you have a python compiled version. </p>
+Run: `vim --version` to see if you have a python compiled version.
   
