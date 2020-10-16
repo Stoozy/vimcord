@@ -3,21 +3,25 @@ if !has("python3")
     finish
 endif
 
+let g:vimrpcdir = expand('<sfile>:p:h')
+
 python3 << en
 import os, subprocess,vim
 
 def start():
     fn = vim.eval("expand('%:t')")
+    adir = vim.eval("vimrpcdir")
     if(fn == ""):
         fn = "Idle" 
     global s
-    s = subprocess.Popen("python3 ~/.vim/plugged/vimcord/plugin/rpc.py {}".format(fn), shell=True)
+    s = subprocess.Popen("python3 {}/rpc.py  {}".format(adir, fn), shell=True)
 def kill():
-    s.terminate()
+    try:
+        s.terminate()
+    except NameError:
+        print("")
 en
-
 
 autocmd VimEnter * :python3 start()
 autocmd BufReadPre * :execute 'python3 kill()' | :python3 start()
 autocmd VimLeave * :python3 kill()
-
