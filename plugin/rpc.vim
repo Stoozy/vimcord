@@ -7,14 +7,25 @@ let g:vimrpcdir = expand('<sfile>:p:h')
 
 python3 << en
 import os, subprocess,vim
+import psutil    
+
+import subprocess
+# check if discord is open
+processes = subprocess.Popen('ps aux | grep Discord', stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True).communicate()[0]
+
+global d
+if(len(processes) != 0):
+    d = True
 
 def start():
-    fn = vim.eval("expand('%:t')")
-    adir = vim.eval("vimrpcdir")
-    if(fn == ""):
-        fn = "Idle" 
-    global s
-    s = subprocess.Popen("python3 {}/rpc.py  {}".format(adir, fn), shell=True)
+    if not d:
+        fn = vim.eval("expand('%:t')")
+        adir = vim.eval("vimrpcdir")
+        if(fn == ""):
+            fn = "Idle" 
+        global s
+        s = subprocess.Popen("python3 {}/rpc.py  {}".format(adir, fn), shell=True)
+
 def kill():
     try:
         s.terminate()
