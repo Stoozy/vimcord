@@ -6,19 +6,27 @@ endif
 let g:vimrpcdir = expand('<sfile>:p:h')
 
 python3 << en
-import os, subprocess,vim
-import psutil    
+import os, subprocess,vim, sys
+import psutil
 
-import subprocess
-# check if discord is open
-processes = subprocess.Popen('ps aux | grep Discord', stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True).communicate()[0]
-
-global d
-if(len(processes) != 0):
-    d = True
+def checkIfProcessRunning(processName):
+    '''
+    Check if there is any running process that contains the given name processName.
+    '''
+    #Iterate over the all the running process
+    for proc in psutil.process_iter():
+        try:
+            # Check if process name contains the given name string.
+            if processName.lower() in proc.name().lower():
+                return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    return False
 
 def start():
-    if not d:
+
+    # check if discord is open
+    if(checkIfProcessRunning("Discord")):
         fn = vim.eval("expand('%:t')")
         adir = vim.eval("vimrpcdir")
         if(fn == ""):
