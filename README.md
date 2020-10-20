@@ -11,6 +11,7 @@ Example:
 ```Plug 'Stoozy/vimcord'```
 
 ## NOTES
+You must have vim compiled with python.
 Run: ```vim --version``` to see if you have a python compiled version.
 
 ## LICENSE 
