@@ -1,5 +1,5 @@
 if !has("python3")
-    echo "vim has to be compiled with +python to run this"
+    "vim has to be compiled with +python to run this"
     finish
 endif
 
@@ -31,16 +31,22 @@ def start():
         adir = vim.eval("vimrpcdir")
         if(fn == ""):
             fn = "Idle" 
-        global s
+        global s, pid
         s = subprocess.Popen("python3 {}/rpc.py  {}".format(adir, fn), shell=True)
+        pid = s.pid
 
 def kill():
     try:
         s.terminate()
     except NameError:
-        print("")
+        print("")        
+    try:
+        os.system("kill {}".format(pid)) 
+    except:
+        print("Discord rpc not killed")
+        
 en
 
-autocmd VimEnter * :python3 start()
+"autocmd VimEnter * :python3 start()
 autocmd BufReadPre * :execute 'python3 kill()' | :python3 start()
-autocmd VimLeave * :python3 kill()
+autocmd VimLeavePre * :execute 'python3 kill()'
