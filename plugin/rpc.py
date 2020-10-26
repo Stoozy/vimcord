@@ -58,16 +58,12 @@ else:
 
 # Start time
 e = time.time()
-if ext in thumbnails:
-    RPC.update(state=st, large_image="vim", small_image=thumbnails[ext], start=e)
-else:
-    RPC.update(state=st, large_image="vim", start=e)
 
+# keep updating rpc
 while True:
     if ext in thumbnails:
-        RPC.update(state=st, large_image="vim", small_image=thumbnails[ext], start=e)
+        RPC.update(state=st, large_image=thumbnails[ext], small_image="vim", start=e)
     else:
         RPC.update(state=st, large_image="vim", start=e)
-    time.sleep(500)
-
+    time.sleep(15)
 

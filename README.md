@@ -11,7 +11,8 @@ Example:
 ```Plug 'Stoozy/vimcord'```
 
 ## NOTES
-Run: ```vim --version``` to see if you have a python compiled version.
+This plugin works only if you have vim with python3 support.
+Run: ```vim --version``` to see if you have a python3 compiled version.
 
 ## LICENSE 
 Copyright 2020 stoozy

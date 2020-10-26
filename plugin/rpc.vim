@@ -47,6 +47,7 @@ def kill():
         
 en
 
-"autocmd VimEnter * :python3 start()
+autocmd VimEnter * :python3 start()
+autocmd BufNewFile * :execute 'python3 kill()' | :python3 start()
 autocmd BufReadPre * :execute 'python3 kill()' | :python3 start()
 autocmd VimLeavePre * :execute 'python3 kill()'
