@@ -1,10 +1,16 @@
 from PyPresence import Presence
+from PyPresence import exceptions
 import time, sys, json
 
 
-client_id = '765583106610298881'  # Fake ID, put your real one here
-RPC = Presence(client_id)  # Initialize the client class
-RPC.connect() # Start the handshake loop
+client_id = '765583106610298881' 
+try:
+    RPC = Presence(client_id)  # Initialize the client class
+    RPC.connect() # Start the handshake loop
+except ConnectionResetError:
+    sys.exit()
+except exceptions.InvalidID:
+    sys.exit()
 
 fn = sys.argv[1]
 
@@ -62,8 +68,18 @@ e = time.time()
 # keep updating rpc
 while True:
     if ext in thumbnails:
-        RPC.update(state=st, large_image=thumbnails[ext], small_image="vim", start=e)
+        try:
+            RPC.update(state=st, large_image=thumbnails[ext], small_image="vim", start=e)
+        except ConnectionResetError:
+            sys.exit()
+        except exceptions.InvalidID:
+            sys.exit()
     else:
-        RPC.update(state=st, large_image="vim", start=e)
+        try:
+            RPC.update(state=st, large_image="vim", start=e)
+        except ConnectionResetError:
+            sys.exit()
+        except exceptions.InvalidID:
+            sys.exit()
     time.sleep(15)
 
