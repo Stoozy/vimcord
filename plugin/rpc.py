@@ -12,7 +12,8 @@ except ConnectionResetError:
 except exceptions.InvalidID:
     sys.exit()
 
-fn = sys.argv[1]
+fn = sys.argv[1] # file name
+ws = sys.argv[2] # workspace (cwd)
 
 try:
     ext = fn.split(".")[1]
@@ -59,8 +60,10 @@ thumbnails = {
 
 if(fn == "Idle"):
     st = "Idle"
+    de = ""
 else:
     st = "Editing {}".format(fn)
+    de = "Workspace: {}".format(ws)
 
 # Start time
 e = time.time()
@@ -69,14 +72,14 @@ e = time.time()
 while True:
     if ext in thumbnails:
         try:
-            RPC.update(state=st, large_image=thumbnails[ext], small_image="vim", start=e)
+            RPC.update(state=st, details=de, large_image=thumbnails[ext], start=e)
         except ConnectionResetError:
             sys.exit()
         except exceptions.InvalidID:
             sys.exit()
     else:
         try:
-            RPC.update(state=st, large_image="vim", start=e)
+            RPC.update(state=st, details=de, large_image="vim", start=e)
         except ConnectionResetError:
             sys.exit()
         except exceptions.InvalidID:

@@ -24,15 +24,16 @@ def checkIfProcessRunning(processName):
     return False
 
 def start():
-
     # check if discord is open
     if(checkIfProcessRunning("Discord")):
         fn = vim.eval("expand('%:t')")
         adir = vim.eval("vimrpcdir")
+        cwd = vim.eval("getcwd()").split("/")[-1]
+
         if(fn == ""):
             fn = "Idle" 
         global s, pid
-        s = subprocess.Popen("python3 {}/rpc.py  {}".format(adir, fn), shell=True)
+        s = subprocess.Popen("python3 {}/rpc.py  {} {}".format(adir, fn, cwd), shell=True)
         pid = s.pid
 
 def kill():
@@ -43,11 +44,11 @@ def kill():
     try:
         os.system("kill {}".format(pid)) 
     except:
-        print("Discord rpc not killed")
-        
+        pass
 en
 
 autocmd VimEnter * :execute 'python3 kill()' | :python3 start()
 autocmd BufNewFile * :execute 'python3 kill()' | :python3 start()
 autocmd BufReadPre * :execute 'python3 kill()' | :python3 start()
 autocmd VimLeavePre * :execute 'python3 kill()'
+
