@@ -79,7 +79,7 @@ while True:
             sys.exit()
     else:
         try:
-            RPC.update(state=st, details=de, large_image="vim", start=e)
+            RPC.update(state=st, large_image="vim", start=e)
         except ConnectionResetError:
             sys.exit()
         except exceptions.InvalidID:

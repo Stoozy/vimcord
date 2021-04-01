@@ -32,6 +32,7 @@ def start():
 
         if(fn == ""):
             fn = "Idle" 
+
         global s, pid
         s = subprocess.Popen("python3 {}/rpc.py  {} {}".format(adir, fn, cwd), shell=True)
         pid = s.pid
