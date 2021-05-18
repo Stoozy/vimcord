@@ -12,11 +12,13 @@ except ConnectionResetError:
 except exceptions.InvalidID:
     sys.exit()
 
-fn = sys.argv[1] # file name
-ws = sys.argv[2] # workspace (cwd)
+
+editing_file_name = sys.argv[1]         # file name
+workspace = sys.argv[2]                 # workspace (cwd)
+show_workspace = sys.argv[3]            # show workpace in the rpc?
 
 try:
-    ext = fn.split(".")[1]
+    ext = editing_file_name.split(".")[1]
 except:
     ext = ""
 
@@ -58,12 +60,15 @@ thumbnails = {
     #'pp': 'Pascal',
 }
 
-if(fn == "Idle"):
+if(editing_file_name == "Idle"):
     st = "Idle"
     de = ""
+elif show_workspace == "true":
+    st = "Editing {}".format(editing_file_name)
+    de = "Workspace: {}".format(workspace)
 else:
-    st = "Editing {}".format(fn)
-    de = "Workspace: {}".format(ws)
+    st = "Editing {}".format(editing_file_name)
+    de = ""
 
 # Start time
 e = time.time()
@@ -72,17 +77,24 @@ e = time.time()
 while True:
     if ext in thumbnails:
         try:
-            RPC.update(state=st, details=de, large_image=thumbnails[ext], start=e)
+            if de == "":
+                RPC.update(state=st, large_image=thumbnails[ext], start=e)
+            else:
+                RPC.update(state=st, details=de, large_image=thumbnails[ext], start=e)
         except ConnectionResetError:
+            RPC.close()
             sys.exit()
         except exceptions.InvalidID:
+            RPC.close()
             sys.exit()
     else:
         try:
             RPC.update(state=st, large_image="vim", start=e)
         except ConnectionResetError:
+            RPC.close()
             sys.exit()
         except exceptions.InvalidID:
+            RPC.close()
             sys.exit()
     time.sleep(15)
 

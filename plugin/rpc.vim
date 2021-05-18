@@ -30,11 +30,21 @@ def start():
         adir = vim.eval("vimrpcdir")
         cwd = vim.eval("getcwd()").split("/")[-1]
 
+        # check if global flag exists
+        if vim.eval("exists('g:vimcord_show_workspace')") == '1':
+            if vim.eval("g:vimcord_show_workspace") == "true":
+                show_workspace = "true"
+            else:
+                show_workspace = "false"
+        else:
+            # true by default
+            show_workspace = "true"
+
         if(fn == ""):
             fn = "Idle" 
 
         global s, pid
-        s = subprocess.Popen("python3 {}/rpc.py  {} {}".format(adir, fn, cwd), shell=True)
+        s = subprocess.Popen("python3 {}/rpc.py {} {} {}".format(adir, fn, cwd, show_workspace), shell=True)
         pid = s.pid
 
 def kill():
@@ -48,8 +58,8 @@ def kill():
         pass
 en
 
-autocmd VimEnter * :execute 'python3 kill()' | :python3 start()
-autocmd BufNewFile * :execute 'python3 kill()' | :python3 start()
-autocmd BufReadPre * :execute 'python3 kill()' | :python3 start()
+autocmd VimEnter    * :execute 'python3 kill()'     | :python3 start()
+autocmd BufNewFile  * :execute 'python3 kill()'     | :python3 start()
+autocmd BufReadPre  * :execute 'python3 kill()'     | :python3 start()
 autocmd VimLeavePre * :execute 'python3 kill()'
 
