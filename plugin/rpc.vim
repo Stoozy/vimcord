@@ -6,60 +6,85 @@ endif
 let g:vimrpcdir = expand('<sfile>:p:h')
 
 python3 << en
-import os, subprocess,vim, sys
+
+# Some global
+thumbnails = {
+    'vim':'vim',
+    'html': 'html',
+    'css': 'css',
+    'js': 'javascript',
+    'php': 'php',
+    'scss': 'sass',
+    'py': 'python',
+    'rs': 'rust',
+    'c': 'c',
+    'h': 'c',
+    'cpp': 'cpp',
+    'hpp': 'cpp',
+    'cxx': 'cpp',
+    'cc': 'cpp',
+    'cs': 'c_sharp',
+    'java': 'java',
+    'md': 'md',
+    'ts': 'typescript',
+    'go': 'golang',
+    'kt': 'kotlin',
+    'kts': 'kotlin',
+    'rb': 'ruby',
+    'clj': 'clojure',
+    'hs': 'haskell',
+    'json': 'json',
+    'vue': 'vue',
+    'swift': 'swift',
+    'lua': 'lua',
+    'jl': 'julia',
+    'dart': 'dart',
+}
+
+# Initialize RPC connection
+import os, subprocess,vim, sys, time
 import psutil
 
-def checkIfProcessRunning(processName):
-    '''
-    Check if there is any running process that contains the given name processName.
-    '''
-    #Iterate over the all the running process
-    for proc in psutil.process_iter():
-        try:
-            # Check if process name contains the given name string.
-            if processName.lower() in proc.name().lower():
-                return True
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            pass
-    return False
+plugin_path = vim.eval("g:vimrpcdir")
+python_module_path = os.path.abspath('%s' % (plugin_path))
 
-def start():
-    # check if discord is open
-    if(checkIfProcessRunning("Discord")):
-        fn = vim.eval("expand('%:t')")
-        adir = vim.eval("vimrpcdir")
-        cwd = vim.eval("getcwd()").split("/")[-1]
+sys.path.append(python_module_path)
 
-        # check if global flag exists
-        if vim.eval("exists('g:vimcord_show_workspace')") == '1':
-            if vim.eval("g:vimcord_show_workspace") == "true":
-                show_workspace = "true"
-            else:
-                show_workspace = "false"
-        else:
-            # true by default
-            show_workspace = "true"
+from PyPresence import Presence
 
-        if(fn == ""):
-            fn = "Idle" 
+client_id = '765583106610298881'
+RPC = Presence(client_id)
 
-        global s, pid
-        s = subprocess.Popen("python3 {}/rpc.py {} {} {}".format(adir, fn, cwd, show_workspace), shell=True)
-        pid = s.pid
+RPC.connect()
+
+# Start time
+e = time.time()
 
 def kill():
-    try:
-        s.terminate()
-    except NameError:
-        print("")        
-    try:
-        os.system("kill {}".format(pid)) 
-    except:
-        pass
+    RPC.close()
+
+def update():
+    file_name =  vim.eval("expand('%:t')")
+    file_extension =   vim.eval("expand('%:e')")
+    workspace_dir = vim.eval("expand('%:p:h:t')")
+
+    _state = "Editing {}".format(file_name) 
+    _details = "Workspace {}".format(workspace_dir) 
+
+    if file_extension in thumbnails:
+        try:
+            RPC.update(state=_state, details=_details, large_image = thumbnails[file_extension],   start = e)
+        except:
+            RPC.close()
+    else:
+        try:
+            RPC.update(state=_state, details=_details, large_image="vim", start=e)
+        except:
+            RPC.close()
 en
 
-autocmd VimEnter    * :execute 'python3 kill()'     | :python3 start()
-autocmd BufNewFile  * :execute 'python3 kill()'     | :python3 start()
-autocmd BufReadPre  * :execute 'python3 kill()'     | :python3 start()
-autocmd VimLeavePre * :execute 'python3 kill()'
+autocmd VimEnter    * :python3 update()
+autocmd BufNewFile  * :python3 update()
+autocmd BufReadPre  * :python3 update()
+autocmd VimLeavePre * :python3 kill()
 
