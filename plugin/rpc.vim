@@ -55,7 +55,10 @@ from PyPresence import Presence
 client_id = '765583106610298881'
 RPC = Presence(client_id)
 
-RPC.connect()
+try: 
+    RPC.connect()
+except:
+    pass
 
 # Start time
 e = time.time()
@@ -85,6 +88,7 @@ en
 
 autocmd VimEnter    * :python3 update()
 autocmd BufNewFile  * :python3 update()
+autocmd InsertEnter * :python3 update()
 autocmd BufReadPre  * :python3 update()
 autocmd VimLeavePre * :python3 kill()
 
