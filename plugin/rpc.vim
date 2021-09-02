@@ -55,10 +55,12 @@ from PyPresence import Presence
 client_id = '765583106610298881'
 RPC = Presence(client_id)
 
+is_connected = True
+
 try: 
     RPC.connect()
 except:
-    pass
+    is_connected = False
 
 # Start time
 e = time.time()
@@ -67,6 +69,9 @@ def kill():
     RPC.close()
 
 def update():
+    if not is_connected:
+        return
+
     file_name =  vim.eval("expand('%:t')")
     file_extension =   vim.eval("expand('%:e')")
     workspace_dir = vim.eval("expand('%:p:h:t')")
