@@ -66,7 +66,10 @@ except:
 e = time.time()
 
 def kill():
-    RPC.close()
+    if is_connected:
+        RPC.close()
+    else:
+        return
 
 def update():
     if not is_connected:
