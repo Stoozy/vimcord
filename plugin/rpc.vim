@@ -1,5 +1,5 @@
 if !has("python3")
-    "vim has to be compiled with +python to run this"
+    echo "vim has to be compiled with +python to run vimcord"
     finish
 endif
 
@@ -42,7 +42,7 @@ thumbnails = {
 }
 
 # Initialize RPC connection
-import os, subprocess,vim, sys, time
+import os, subprocess, vim, sys, time
 import psutil
 
 plugin_path = vim.eval("g:vimrpcdir")
@@ -50,7 +50,7 @@ python_module_path = os.path.abspath('%s' % (plugin_path))
 
 sys.path.append(python_module_path)
 
-from PyPresence import Presence
+from pypresence import Presence
 
 client_id = '765583106610298881'
 RPC = Presence(client_id)
@@ -73,6 +73,7 @@ def kill():
 
 def update():
     if not is_connected:
+        print("couldn't connect")
         return
 
     file_name =  vim.eval("expand('%:t')")
