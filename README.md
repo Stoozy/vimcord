@@ -57,8 +57,8 @@ git clone https://github.com/Stoozy/vimcord
 
 
 ## NOTES
-This plugin works only if you have vim with python3 support.
-Run: `vim --version` to see if you have a python3 compiled version.
+This plugin works only if you have vim with python3 support and python's psutil module.
+Run: `vim --version` to see if you have a python3 compiled version and `pip3 install psutil` to install python's psutil module.
 
 ## Configuration
 
