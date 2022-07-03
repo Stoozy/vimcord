@@ -3,101 +3,54 @@ if !has("python3")
     finish
 endif
 
-let g:vimrpcdir = expand('<sfile>:p:h')
+let g:vimcord_root_dir = expand('<sfile>:p:h:h')
 
-python3 << en
+if has("nvim")
+  let g:vimcord_nvim = 1
+  let g:vimcord_async = 1
+  python3 import asyncio
 
-# Some global
-thumbnails = {
-    'vim':'vim',
-    'html': 'html',
-    'css': 'css',
-    'js': 'javascript',
-    'php': 'php',
-    'scss': 'sass',
-    'py': 'python',
-    'rs': 'rust',
-    'c': 'c',
-    'h': 'c',
-    'cpp': 'cpp',
-    'hpp': 'cpp',
-    'cxx': 'cpp',
-    'cc': 'cpp',
-    'cs': 'c_sharp',
-    'java': 'java',
-    'md': 'md',
-    'ts': 'typescript',
-    'go': 'golang',
-    'kt': 'kotlin',
-    'kts': 'kotlin',
-    'rb': 'ruby',
-    'clj': 'clojure',
-    'hs': 'haskell',
-    'json': 'json',
-    'vue': 'vue',
-    'swift': 'swift',
-    'lua': 'lua',
-    'jl': 'julia',
-    'dart': 'dart',
-}
+  python3 from vimcord.rpc import Vimcord
+  python3 vimcord = Vimcord()
 
-# Initialize RPC connection
-import os, subprocess, vim, sys, time
-import psutil
+  " COMMANDS
 
-plugin_path = vim.eval("g:vimrpcdir")
-python_module_path = os.path.abspath('%s' % (plugin_path))
+  command! VimcordConnect python3 vimcord.connect()
+  command! VimcordUpdate python3 vimcord.update()
+  command! VimcordDisconnect python3 vimcord.kill()
 
-sys.path.append(python_module_path)
+else
+  let g:vimcord_nvim = 0
+  let g:vimcord_async = 0
 
-from pypresence import Presence
+  python3 from vimcord.rpc import Vimcord
+  python3 vimcord = Vimcord()
 
-client_id = '765583106610298881'
-RPC = Presence(client_id)
+  " FUNCTIONS
 
-is_connected = True
+  function! VimcordConnect()
+    python3 vimcord.connect()
+  endfunction
 
-try: 
-    RPC.connect()
-except:
-    is_connected = False
 
-# Start time
-e = time.time()
+  function! VimcordUpdate()
+    python3 vimcord.update()
+  endfunction
 
-def kill():
-    if is_connected:
-        RPC.close()
-    else:
-        return
+  function! VimcordDisconnect()
+    python3 vimcord.kill()
+  endfunction
 
-def update():
-    if not is_connected:
-        print("couldn't connect")
-        return
+  " COMMANDS
 
-    file_name =  vim.eval("expand('%:t')")
-    file_extension =   vim.eval("expand('%:e')")
-    workspace_dir = vim.eval("expand('%:p:h:t')")
+  command! -nargs=0 VimcordConnect call VimcordConnect()
+  command! -nargs=0 VimcordUpdate call VimcordUpdate()
+  command! -nargs=0 VimcordDisconnect call VimcordDisconnect()
 
-    _state = "Editing {}".format(file_name) 
-    _details = "Workspace {}".format(workspace_dir) 
+endif
 
-    if file_extension in thumbnails:
-        try:
-            RPC.update(state=_state, details=_details, large_image = thumbnails[file_extension],   start = e)
-        except:
-            RPC.close()
-    else:
-        try:
-            RPC.update(state=_state, details=_details, large_image="vim", start=e)
-        except:
-            RPC.close()
-en
-
-autocmd VimEnter    * :python3 update()
-autocmd BufNewFile  * :python3 update()
-autocmd InsertEnter * :python3 update()
-autocmd BufReadPre  * :python3 update()
-autocmd VimLeavePre * :python3 kill()
-
+autocmd VimEnter    * : execute 'VimcordConnect' | VimcordUpdate
+autocmd BufNewFile  * : VimcordUpdate
+autocmd InsertEnter * : VimcordUpdate
+autocmd BufReadPre  * : VimcordUpdate
+autocmd VimLeavePre * : VimcordDisconnect
