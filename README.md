@@ -56,10 +56,6 @@ git clone https://github.com/Stoozy/vimcord
 ```
 
 
-## NOTES
-This plugin works only if you have vim with python3 support and python's psutil module.
-Run: `vim --version` to see if you have a python3 compiled version and `pip3 install psutil` to install python's psutil module.
-
 ## Configuration
 
 Set `g:vimcord_show_workspace` to false to disallow showing the current workspace in the RPC. (This is true by default).
