@@ -26,7 +26,7 @@ class FileMetaData:
     def __init__(self, vim):
         self.name =  vim.eval("expand('%:t')")
         self.extension =  vim.eval("expand('%:e')")
-        self.workspace = vim.eval("expand('%:p:h:t')")
+        self.workspace = os.path.basename(os.path.normpath(vim.eval("g:vimcord_workspace")))
 
 
 class Vimcord:

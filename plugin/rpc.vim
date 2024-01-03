@@ -4,6 +4,7 @@ if !has("python3")
 endif
 
 let g:vimcord_root_dir = expand('<sfile>:p:h:h')
+let g:vimcord_workspace = getcwd()
 
 if has("nvim")
   let g:vimcord_nvim = 1
