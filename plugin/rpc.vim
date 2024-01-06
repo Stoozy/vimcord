@@ -3,6 +3,26 @@ if !has("python3")
     finish
 endif
 
+function! DebugMsg(msg) abort
+    if !exists("g:DebugMessages")
+        let g:DebugMessages = []
+    endif
+    call add(g:DebugMessages, a:msg)
+endfunction
+
+function! PrintDebugMsgs() abort
+  if empty(get(g:, "DebugMessages", []))
+    echo "No debug messages."
+    return
+  endif
+  for ln in g:DebugMessages
+    echo "- " . ln
+  endfor
+endfunction
+
+command DebugStatus call PrintDebugMsgs()
+
+
 let g:vimcord_root_dir = expand('<sfile>:p:h:h')
 let g:vimcord_workspace = getcwd()
 

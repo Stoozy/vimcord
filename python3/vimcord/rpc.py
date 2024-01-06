@@ -29,6 +29,7 @@ class FileMetaData:
         self.workspace = os.path.basename(os.path.normpath(vim.eval("g:vimcord_workspace")))
 
 
+debug_msg = vim.bindeval('function("DebugMsg")')
 class Vimcord:
     def __init__(self) -> None:
 
@@ -36,18 +37,18 @@ class Vimcord:
             try:
                 self.rpc  = AioPresence('765583106610298881')
             except DiscordNotFound:
-                print("Discord not open")
+                debug_msg("Discord not open")
+                # vim.eval("call DebugMsg(\"Discord not open\")")
             except:
-                # print("Vimcord crashed")
-                pass
+                debug_msg("Vimcord crashed")
+                # vim.eval("call DebugMsg(\"Vimcord crashed\")")
         else:
             try:
                 self.rpc  = Presence('765583106610298881')
             except DiscordNotFound:
-                print("Discord not open")
+                debug_msg("Discord not open")
             except:
-                # print("Vimcord crashed")
-                pass
+                debug_msg("Vimcord crashed")
 
         self.connected = False
         self.start_time = int(time.time())
@@ -60,11 +61,10 @@ class Vimcord:
                 asyncio.create_task(self.rpc.connect())
                 self.connected = True
             except DiscordNotFound:
-                print("Discord not open")
+                debug_msg("Discord not open")
                 self.connected = False
             except:
                 self.connected = False
-                # print("Vimcord crashed")
 
 
         else:
@@ -72,16 +72,15 @@ class Vimcord:
                 self.rpc.connect()
                 self.connected = True
             except DiscordNotFound:
-                print("Discord not open")
+                debug_msg("Discord not open")
             except:
-                # print("Vimcord crashed")
                 pass
 
 
 
     def update(self):
         if not self.connected:
-            # print("Vimcord not connected");
+            debug_msg("Vimcord not connected")
             return
 
         fmd = FileMetaData(vim)
@@ -108,7 +107,7 @@ class Vimcord:
                     large_image=thumbnailsDictionary[fmd.extension] if fmd.extension in thumbnailsDictionary else thumbnailsDictionary[self.vim],
                     start=self.start_time)
             except DiscordNotFound:
-                print("Discord not open")
+                debug_msg("Discord not open")
             except:
                 pass
                 # print("Vimcord crashed")
